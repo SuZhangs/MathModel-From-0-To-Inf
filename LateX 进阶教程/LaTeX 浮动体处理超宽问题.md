@@ -53,7 +53,7 @@
 \end{document}
 ```
 
-<img src="https://liam.page/uploads/images/LaTeX/overfull_01.png" alt="用缩小的办法处理超宽的内容" style="zoom: 50%;" />
+<img src="https://github.com/SuZhangs/MathModel-From-0-To-Inf/blob/main/DATA/IMG/LaTeX01.png" width="50%" height="50%">
 
 > 表格内容缩小后，可能看不清。
 
@@ -129,7 +129,8 @@
 \end{document}
 ```
 
-<img src="https://liam.page/uploads/images/LaTeX/overfull_04.png" alt="旋转、跳跃，我闭着眼" style="zoom:50%;" />
+
+<img src="https://github.com/SuZhangs/MathModel-From-0-To-Inf/blob/main/DATA/IMG/LATX02.png" width="50%" height="50%">
 
 
 
