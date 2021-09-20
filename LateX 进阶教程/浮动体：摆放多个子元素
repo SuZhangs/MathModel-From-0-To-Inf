@@ -1,0 +1,217 @@
+# LaTeX 中的浮动体：摆放多个子元素
+
+### 浮动体和题注的本质：
+
+理解 LaTeX 中的浮动体，最简便的方式是将其理解为「**一个支持 `\caption` 会按照算法浮动位置的文本框**」
+
+在 M$ Word 当中，文本框中可以放置任意内容；在 LaTeX 浮动体中也是一样。在 M$ Word 当中，文本框可以没有 `\caption`，在 LaTeX 浮动体中也是一样。
+
+```latex
+\documentclass{article}
+\usepackage{mwe}  % for dummy text
+
+\begin{document}
+Foo
+\begin{figure}[htb]  % a float environment without 
+%\caption containing text
+\blindtext
+\end{figure}
+bar
+\end{document}
+%由于 figure 环境整体浮动，让 Foo 和 bar 排在了同一行
+%而\blindtext 的输出则浮动到了 Foo bar 的下方。
+```
+
+**TeX 在排版时不关心具体内容，只关心描述每个元素尺寸的 bounding box**
+
+题注是有一定格式的编号文本。
+
+```latex
+%%插入一个手工题注
+\centering{\rmfamily\upshape\normalsize\mdseries Figure 1: Foo bar.}
+%%使用多个 \caption
+\begin{figure}[htb]
+\rule{4cm}{3cm}\quad\rule{4cm}{3cm}\quad\rule{4cm}{3cm}\quad\rule{4cm}{3cm}
+\caption{Foo.}
+\caption{Bar.}
+\end{figure}
+```
+
+#### 如何在浮动体中摆放多个元素，以及如何处理它们的题注（caption）？
+
+不考虑子题注，在浮动体中插入两个元素，按照元素排布形状和题注规律，大致有以下一些组合。
+
+- 并排摆放，无题注
+- 并排摆放，共享题注
+- 并排摆放，各自题注
+- 纵向摆放，无题注
+- 纵向摆放，共享题注
+- 纵向摆放，各有题注（无用，因为可以分割成两个浮动体）
+
+
+
+### 并排摆放，无题注
+
+要点：让同一行内所有元素的总宽度不大于允可的宽度。
+
+```latex
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[showframe]{geometry}  % for showing frames of pages
+\begin{document}
+Foo
+\begin{figure}[htb]
+\centering
+\includegraphics[width = .48\linewidth]{example-image-a}\hfill
+\includegraphics[width = .48\linewidth]{example-image-b}
+\end{figure}
+bar
+\end{document}
+```
+
+### 并排摆放，共享题注
+
+~~~latex
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[showframe]{geometry}  % for showing frames of pages
+\begin{document}
+Foo
+\begin{figure}[htb]
+\centering
+\includegraphics[width = .48\linewidth]{example-image-a}\hfill
+\includegraphics[width = .48\linewidth]{example-image-b}
+
+\caption{Dummy Caption.} %相比上一节的代码，只需加上题注即可。
+
+\end{figure}
+bar
+\end{document}
+~~~
+
+### 并排摆放，各自题注
+
+由于题注是针对当前环境居中的；因此，若我们希望为并排摆放的两个图片分别添加题注，就需要让并排摆放的两个图片分别处于单独的盒子当中。
+
+~~~latex
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[showframe]{geometry}  % for showing frames of pages
+\begin{document}
+Foo
+\begin{figure}[htb]
+\centering
+
+\begin{minipage}{0.48\linewidth} %用 minipage 环境将两个图片和他们分别的题注放在一起
+\centering
+\includegraphics[width = \linewidth]{example-image-a}
+\caption{Dummy Caption A.}
+\end{minipage}\hfill
+
+\begin{minipage}{0.48\linewidth} %用 minipage 环境将两个图片和他们分别的题注放在一起
+\centering
+\includegraphics[width = \linewidth]{example-image-b}
+\caption{Dummy Caption B.}
+\end{minipage}
+
+\end{figure}
+bar
+\end{document}
+~~~
+
+### 纵向摆放，无题注
+
+控制两个元素纵向摆放：只需要让两个元素的总宽度大于允可的宽度，或是手工换行即可。
+
+~~~latex
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[showframe]{geometry}  % for showing frames of pages
+\begin{document}
+Foo
+\begin{figure}[htb]
+\centering
+\includegraphics[width = .6\linewidth]{example-image-a}\\[2ex]
+\includegraphics[width = .6\linewidth]{example-image-b}
+\end{figure}
+bar
+\end{document}
+~~~
+
+## 多个元素与子题注
+
+这里涉及两种方法：
+
+分别对应于[[使用 `subfig` 宏包]][1. 使用 `subfig` 宏包]和[[使用 `subcaption` 宏包]](2. 使用 `subcaption` 宏包)。
+
+
+
+### 1. 使用 `subfig` 宏包
+
+~~~latex
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage[showframe]{geometry}  % for showing frames of pages
+\begin{document}
+Foo
+
+\begin{figure}[htb]
+\centering
+\subfloat[Subcaption A]{\includegraphics[width = .48\linewidth]{example-image-a}}\hfill %\subfloat 命令为其中的内容（图片或表格）创建了一个盒子，并支持设置子题注。
+\subfloat[Subcaption B]{\includegraphics[width = .48\linewidth]{example-image-b}}%\subfloat 命令为其中的内容（图片或表格）创建了一个盒子，并支持设置子题注。
+\caption{Two figures.}
+\end{figure}
+
+bar
+\end{document}
+~~~
+
+
+
+### 2. 使用 `subcaption` 宏包
+
+~~~latex
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[showframe]{geometry}  % for showing frames of pages
+\begin{document}
+Foo
+
+\begin{figure}[htb]
+\centering
+
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width = \linewidth]{example-image-a}
+\subcaption{Dummy Subcaption A.} %子题注
+\end{minipage}\hfill 
+
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width = \linewidth]{example-image-b}
+\subcaption{Dummy Subcaption B.}%子题注
+\end{minipage}
+
+\caption{Dummy Caption.} %共享题注
+
+
+\end{figure}
+bar
+\end{document}
+~~~
+
+
+
+
+
+## 扩展阅读
+
+【没看过...有时间看吧】
+
+- [`caption` 宏包](https://www.ctan.org/pkg/caption)：提供了一系列控制题注格式的接口；
+- [`subcaption` 宏包](https://www.ctan.org/pkg/subcaption)：提供了控制子题注的接口，适合与 `caption` 宏包联用；
+- [`subfig` 宏包](https://www.ctan.org/pkg/subfig)：提供了控制子题注的接口；
+- [`floatrow` 宏包](https://www.ctan.org/pkg/floatrow)：提供了更多的控制浮动体格式的接口。
