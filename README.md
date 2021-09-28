@@ -1,5 +1,7 @@
 # MathModel-From-0-To-Inf
 Public
+
+# 交流学习 邮箱 suzhangs@outlook.com
 1
 0
 0
