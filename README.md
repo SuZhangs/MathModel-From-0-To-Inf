@@ -12,3 +12,4 @@ Public
 
 #### 命令提示
 > img src="url地址" width="50%" height="50%" 需要在两边加<>
+> .com 修改为 .githistory.xyz
